@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -75,6 +76,7 @@ class _MapPageState extends State<MapPage> {
   }
 
   Future<void> _signOut() async {
+    await Firebase.initializeApp();
     await FirebaseAuth.instance.signOut();
     Constants.prefs.setBool("loggedIn", false);
     Navigator.pushReplacementNamed(context, '/');
@@ -95,7 +97,7 @@ class _MapPageState extends State<MapPage> {
 
   Future<String> getData() async {
     http.Response response = await http.get(
-        Uri.encodeFull("http://192.168.43.102:7000/chargers"),
+        Uri.encodeFull("https://micelio.herokuapp.com/chargers"),
         headers: {"Accept": "application/json"});
         var chargerDetais = jsonDecode(response.body);
         print("chargerDetails $chargerDetais");

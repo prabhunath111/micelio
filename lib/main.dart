@@ -7,10 +7,8 @@ import 'package:micelio/screens/register.dart';
 import 'package:micelio/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp();
   Constants.prefs = await SharedPreferences.getInstance();
   runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -21,6 +19,5 @@ void main() async{
         '/login': (context) => Login(),
         '/map': (context) => MapPage()
       },
-
     ));
 }
