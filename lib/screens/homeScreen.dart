@@ -27,14 +27,21 @@ class _HomeState extends State<Home> {
                 bottomRight: Radius.circular(100)
               )
             ),
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("~WELCOME~", style: TextStyle(color: Colors.white, fontSize: 16.0, fontWeight: FontWeight.bold),),
+                  Text("~MICELIO~", style: TextStyle(color: Colors.white, fontSize: 16.0, fontWeight: FontWeight.bold),),
+                ],
+              ),
+            ),
           ),
           SizedBox(
             height: screenSize.height*0.05,
           ),
-
           RaisedGradientButton(
             color: Colors.white,
-
               child: Text(
                 'REGISTER',
                 style: TextStyle(color: Colors.white),
@@ -42,14 +49,12 @@ class _HomeState extends State<Home> {
               gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                colors: [Color(0xFF81007F), Colors.white],
+                colors: [Color(0xFF4A5BAD), Color(0xFF81007F), Color(0xFF4A5BAD)],
               ),
-
             onPressed: ()=> Navigator.pushNamed(context, '/register')),
           SizedBox(
             height: screenSize.height*0.05,
           ),
-
           RaisedGradientButton(
               child: Text(
                 'LOGIN',
@@ -58,7 +63,7 @@ class _HomeState extends State<Home> {
               gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                colors: [Color(0xFF81007F), Color(0xFF4A5BAD)],
+                colors: [Color(0xFF81007F), Color(0xFF4A5BAD), Color(0xFF81007F)],
               ),
             onPressed: ()=> Navigator.pushNamed(context, '/login')),
         ],
