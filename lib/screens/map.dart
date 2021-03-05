@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart';
 import 'package:micelio/utils/constants.dart';
 import 'package:micelio/utils/getcurrentlocation.dart';
 import 'package:micelio/utils/onWillPop.dart';
@@ -26,6 +27,7 @@ class _MapPageState extends State<MapPage> {
   );
   var getlocation = GetCurrentLocation();
   var myLocation;
+  var chargerCount;
   Position _currentPosition;
 
   @override
@@ -33,7 +35,6 @@ class _MapPageState extends State<MapPage> {
     // TODO: implement initState
     super.initState();
     getCurrLoc();
-    getData();
   }
   @override
   Widget build(BuildContext context) {
@@ -55,6 +56,22 @@ class _MapPageState extends State<MapPage> {
               markers: Set<Marker>.of(markers.values),
             ),
             Positioned(
+              left: 0.0,
+              bottom: 0.0,
+              right:0.0,
+              child: Container(
+                height: 100.0,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 3,
+                  itemBuilder: (BuildContext context, int index) => Card(
+                    child: Center(child: Text('Dummy Card Text')),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
                 left: 0.0,
                 top: 0.0,
                 right: 0.0,
@@ -68,7 +85,8 @@ class _MapPageState extends State<MapPage> {
                   ],
                   title: Text("Micelio"),
                   backgroundColor: Colors.transparent,
-                )),
+                )
+            ),
           ],
         )
       ),
@@ -93,13 +111,28 @@ class _MapPageState extends State<MapPage> {
       _currentPosition = getlocation.currPosition;
     });
     print("Line81 ${_currentPosition}");
+    getNearbyCharger(_currentPosition);
   }
 
-  Future<String> getData() async {
-    http.Response response = await http.get(
-        Uri.encodeFull("https://micelio.herokuapp.com/chargers"),
-        headers: {"Accept": "application/json"});
-        var chargerDetais = jsonDecode(response.body);
-        print("chargerDetails $chargerDetais");
+  Future<String> getNearbyCharger(Position position) async {
+    final uri = "https://micelio.herokuapp.com/chargers/nearcharger";
+    final headers = {'Content-Type': 'application/json'};
+    var body = {
+      "location": {
+        "type": "Point",
+        "coordinates": [position.latitude, position.longitude]
+      }
+    };
+    final jsonBody = jsonEncode(body);
+    http.post(uri, body: jsonBody, headers: headers)
+        .then((response) {
+      final body1 = json.decode(response.body);
+      print("Response status: ${response.statusCode}");
+      print("Response body: ${body1.length}");
+    });
+    setState(() {
+
+    });
+    // print("line120 $statusCode");
   }
 }

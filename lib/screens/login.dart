@@ -69,7 +69,8 @@ class _LoginState extends State<Login> {
             child: AppBar(
               elevation: 0.0,
               backgroundColor: Colors.transparent,
-            )),
+            )
+        ),
       ],
     ));
   }
