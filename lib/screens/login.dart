@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:micelio/utils/constants.dart';
 import 'package:micelio/utils/showAlert.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 FirebaseAuth auth = FirebaseAuth.instance;
 
 class Login extends StatefulWidget {

@@ -30,7 +30,6 @@ class _HomeState extends State<Home> {
           RaisedButton(
             onPressed: ()=> Navigator.pushNamed(context, '/register'),
             highlightColor: Colors.blue,
-
             shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0),
                   side: BorderSide(color: Colors.purpleAccent)

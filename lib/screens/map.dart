@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:micelio/utils/constants.dart';
+import 'package:micelio/utils/getcurrentlocation.dart';
 import 'package:micelio/utils/onWillPop.dart';
 
 class MapPage extends StatefulWidget {
@@ -18,6 +20,16 @@ class _MapPageState extends State<MapPage> {
     target: LatLng(22.5692, 88.4489),
     zoom: 7,
   );
+  var getlocation = GetCurrentLocation();
+  var myLocation;
+  Position _currentPosition;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrLoc();
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -33,7 +45,7 @@ class _MapPageState extends State<MapPage> {
               onMapCreated: _onMapCreated,
               trafficEnabled: true,
               myLocationEnabled: true,
-              myLocationButtonEnabled: true,
+              // myLocationButtonEnabled: true,
               markers: Set<Marker>.of(markers.values),
             ),
             Positioned(
@@ -59,5 +71,13 @@ class _MapPageState extends State<MapPage> {
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
     _controller.complete(controller);
+  }
+
+  Future getCurrLoc() async{
+    await getlocation.getCurrentLocation();
+    setState(() {
+      _currentPosition = getlocation.currPosition;
+    });
+    print("Line81 ${_currentPosition}");
   }
 }
