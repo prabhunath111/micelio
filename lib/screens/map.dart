@@ -41,6 +41,7 @@ class _MapPageState extends State<MapPage> {
     return WillPopScope(
       onWillPop: OnWillPop().onWillPop,
       child: Scaffold(
+
         body: Stack(
           children: [
             GoogleMap(
@@ -48,18 +49,25 @@ class _MapPageState extends State<MapPage> {
               initialCameraPosition: _kGooglePlex,
               onMapCreated: _onMapCreated,
               trafficEnabled: true,
-              myLocationEnabled: true,
+              // myLocationEnabled: true,
               // myLocationButtonEnabled: true,
               markers: Set<Marker>.of(markers.values),
             ),
             Positioned(
-              right: 0.0,
-              top: screenSize.height*0.05,
-              child: IconButton(
-              onPressed: ()=>_signOut(),
-              icon: Icon(Icons.logout, color: Colors.red,size: 33.0,),
-            ),
-            )
+                left: 0.0,
+                top: 0.0,
+                right: 0.0,
+                child: AppBar(
+                  elevation: 0.1,
+                  actions: [
+                    IconButton(
+                      onPressed: ()=>_signOut(),
+                      icon: Icon(Icons.logout, color: Colors.red,size: 33.0,),
+                    ),
+                  ],
+                  title: Text("Micelio"),
+                  backgroundColor: Colors.transparent,
+                )),
           ],
         )
       ),
