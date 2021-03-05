@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -6,6 +7,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:micelio/utils/constants.dart';
 import 'package:micelio/utils/getcurrentlocation.dart';
 import 'package:micelio/utils/onWillPop.dart';
+import 'package:http/http.dart' as http;
+
 
 class MapPage extends StatefulWidget {
   @override
@@ -29,6 +32,7 @@ class _MapPageState extends State<MapPage> {
     // TODO: implement initState
     super.initState();
     getCurrLoc();
+    getData();
   }
   @override
   Widget build(BuildContext context) {
@@ -79,5 +83,13 @@ class _MapPageState extends State<MapPage> {
       _currentPosition = getlocation.currPosition;
     });
     print("Line81 ${_currentPosition}");
+  }
+
+  Future<String> getData() async {
+    http.Response response = await http.get(
+        Uri.encodeFull("http://192.168.43.102:7000/chargers"),
+        headers: {"Accept": "application/json"});
+        var chargerDetais = jsonDecode(response.body);
+        print("chargerDetails $chargerDetais");
   }
 }
