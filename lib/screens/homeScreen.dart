@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:micelio/utils/button.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -19,31 +20,47 @@ class _HomeState extends State<Home> {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Colors.pink, Colors.blue]
+                colors: [Color(0xFF81007F), Color(0xFF4A5BAD)]
               ),
               borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(150),
-                bottomRight: Radius.circular(150)
+                bottomLeft: Radius.circular(100),
+                bottomRight: Radius.circular(100)
               )
             ),
           ),
-          RaisedButton(
-            onPressed: ()=> Navigator.pushNamed(context, '/register'),
-            highlightColor: Colors.blue,
-            shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0),
-                  side: BorderSide(color: Colors.purpleAccent)
+          SizedBox(
+            height: screenSize.height*0.05,
+          ),
+
+          RaisedGradientButton(
+            color: Colors.white,
+
+              child: Text(
+                'REGISTER',
+                style: TextStyle(color: Colors.white),
               ),
-            child: Text("REGISTER", style: TextStyle(color: Colors.blue,),),
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [Color(0xFF81007F), Colors.white],
+              ),
+
+            onPressed: ()=> Navigator.pushNamed(context, '/register')),
+          SizedBox(
+            height: screenSize.height*0.05,
           ),
-          RaisedButton(
-            onPressed: ()=> Navigator.pushNamed(context, '/login'),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0),
-                side: BorderSide(color: Colors.purple)
-            ),
-            child: Text("LOGIN", style: TextStyle(color: Colors.blue),),
-          ),
+
+          RaisedGradientButton(
+              child: Text(
+                'LOGIN',
+                style: TextStyle(color: Colors.white),
+              ),
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [Color(0xFF81007F), Color(0xFF4A5BAD)],
+              ),
+            onPressed: ()=> Navigator.pushNamed(context, '/login')),
         ],
       ),
     );
