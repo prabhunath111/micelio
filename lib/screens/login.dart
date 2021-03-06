@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:micelio/utils/button.dart';
 import 'package:micelio/utils/constants.dart';
 import 'package:micelio/utils/showAlert.dart';
 FirebaseAuth auth = FirebaseAuth.instance;
@@ -16,66 +17,95 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
     return
       Scaffold(
-        body: Stack(
-      children: [
-        Container(
-          height: MediaQuery.of(context).size.height * 0.9,
-          color: Colors.blue,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 120.0),
-            child:
-            Form(
-                key: _formKey,
-                child: Column(
-                  children: <Widget>[
-                    TextFormField(
-                      validator: (input) {
-                        if(input.isEmpty){
-                          return 'Provide an email';
-                        }
-                      },
-                      decoration: InputDecoration(
-                          labelText: 'Email'
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                height: screenSize.height * 0.65,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Color(0xFF81007F), Color(0xFF4A5BAD)]),
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(100),
+                        bottomRight: Radius.circular(100))),
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset('assets/images/car.png'),
+                      Text(
+                        "~LOGIN~",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold),
                       ),
-                      onSaved: (input) => _email = input,
-                    ),
-                    TextFormField(
-                      validator: (input) {
-                        if(input.length < 6){
-                          return 'Longer password please';
-                        }
-                      },
-                      decoration: InputDecoration(
-                          labelText: 'Password'
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: screenSize.height*0.02),
+              Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      TextFormField(
+                        validator: (input) {
+                          if(input.isEmpty){
+                            return 'Provide an email';
+                          }
+                        },
+                        decoration: InputDecoration(
+                            labelText: 'Email'
+                        ),
+                        onSaved: (input) => _email = input,
                       ),
-                      onSaved: (input) => _password = input,
-                      obscureText: true,
-                    ),
-                    RaisedButton(
-                      onPressed: signIn,
-                      child: Text('Sign in'),
-                    ),
-                  ],
-                )
-            ),
+                      TextFormField(
+                        validator: (input) {
+                          if(input.length < 6){
+                            return 'Longer password please';
+                          }
+                        },
+                        decoration: InputDecoration(
+                            labelText: 'Password'
+                        ),
+                        onSaved: (input) => _password = input,
+                        obscureText: true,
+                      ),
+                    ],
+                  )
+              ),
+              SizedBox(height: screenSize.height*0.02),
+              RaisedGradientButton(
+                  color: Colors.white,
+                  child: Text(
+                    'LOGIN',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      Color(0xFF4A5BAD),
+                      Color(0xFF81007F),
+                      Color(0xFF4A5BAD)
+                    ],
+                  ),
+                  onPressed: () => login()
+              ),
+            ],
           ),
         ),
-        Positioned(
-            left: 0.0,
-            top: 0.0,
-            right: 0.0,
-            child: AppBar(
-              elevation: 0.0,
-              backgroundColor: Colors.transparent,
-            )
-        ),
-      ],
-    ));
+      );
   }
 
-  Future<void> signIn() async {
+  Future<void> login() async {
     await Firebase.initializeApp();
     final formState = _formKey.currentState;
     if (formState.validate()) {
@@ -85,7 +115,6 @@ class _LoginState extends State<Login> {
             .signInWithEmailAndPassword(email: _email, password: _password)).user;
         print("Inside try ${user.email} ");
         if(user!=null){
-          print("Line 88");
           Constants.prefs.setBool("loggedIn", true);
           Navigator.pushReplacementNamed(context, '/map');
         }else{}

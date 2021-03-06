@@ -35,8 +35,9 @@ class _RegisterState extends State<Register> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    Image.asset('assets/images/car.png'),
                     Text(
-                      "~SIGN UP~",
+                      "~REGISTER~",
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 20.0,
@@ -116,5 +117,4 @@ class _RegisterState extends State<Register> {
       }
     }
   }
-
 }

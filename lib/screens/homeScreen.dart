@@ -28,15 +28,9 @@ class _HomeState extends State<Home> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Image.asset('assets/images/car.png'),
                   Text(
                     "~WELCOME~",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    "~MICELIO~",
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 16.0,
