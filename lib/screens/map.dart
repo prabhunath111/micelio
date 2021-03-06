@@ -68,7 +68,7 @@ class _MapPageState extends State<MapPage> {
                         itemCount: nearbyCharger.length,
                         itemBuilder: (BuildContext context, int index) => Card(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
+                            borderRadius: BorderRadius.circular(20.0),
                           ),
                           child: Center(
                             child: Padding(
@@ -99,7 +99,7 @@ class _MapPageState extends State<MapPage> {
                                               ? Padding(
                                                   padding:
                                                       const EdgeInsets.only(
-                                                          bottom: 4.0),
+                                                          bottom: 6.0),
                                                   child: Text(
                                                     nearbyCharger[index]
                                                         ['charger_id'],
@@ -114,14 +114,14 @@ class _MapPageState extends State<MapPage> {
                                               ? Padding(
                                                   padding:
                                                       const EdgeInsets.only(
-                                                          bottom: 4.0),
+                                                          bottom: 6.0),
                                                   child: Text(
                                                     nearbyCharger[index]
-                                                        ['charger_name'],
+                                                        ['charger_name'].toString().toUpperCase(),
                                                     style: TextStyle(
                                                         color: Colors.black,
                                                         fontWeight:
-                                                            FontWeight.bold),
+                                                            FontWeight.bold, fontSize: 16.0),
                                                   ),
                                                 )
                                               : Container(),
@@ -131,7 +131,7 @@ class _MapPageState extends State<MapPage> {
                                               ? Padding(
                                                   padding:
                                                       const EdgeInsets.only(
-                                                          bottom: 4.0),
+                                                          bottom: 6.0),
                                                   child: Text(
                                                     nearbyCharger[index]
                                                         ['chargerStatus'],
@@ -158,7 +158,8 @@ class _MapPageState extends State<MapPage> {
                                   Container(
                                       width: screenSize.width * 0.7,
                                       child: RaisedButton(
-                                        color: Colors.redAccent,
+                                        onPressed: (){},
+                                        color: Colors.green,
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(18.0),
@@ -202,20 +203,27 @@ class _MapPageState extends State<MapPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          TextField(
-                            decoration: new InputDecoration(
-                                border: new OutlineInputBorder(
-                                  borderRadius: const BorderRadius.all(
-                                    const Radius.circular(50.0),
-                                  ),
-                                ),
-                                filled: true,
-                                prefixIcon: Icon(Icons.circle,
-                                    color: Colors.green, size: 11.0),
-                                hintStyle: new TextStyle(color: Colors.grey),
-                                hintText: "Your Location",
-                                fillColor: Colors.white),
+                          Theme(
+                          data: ThemeData(
+                            primaryColor: Colors.green,
+                            hintColor: Colors.grey
                           ),
+                            child: TextField(
+                              decoration: new InputDecoration(
+                                  // borderRadiuserSide: const BorderSide(color: Colors.grey, width: 0.0),
+                                  border: new OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.green, width: 0.0),
+                                    borderRadius: const BorderRadius.all(
+                                      const Radius.circular(50.0),
+                                    ),
+                                  ),
+                                  filled: true,
+                                  prefixIcon: Icon(Icons.circle,
+                                      color: Colors.green, size: 11.0),
+                                  hintText: "Your Location",
+                                  fillColor: Colors.white),
+                            ),
+                          )
                         ],
                       ),
                     ),
@@ -224,7 +232,7 @@ class _MapPageState extends State<MapPage> {
                       decoration: BoxDecoration(
                           shape: BoxShape.circle, color: Colors.white),
                       child: IconButton(
-                        onPressed: () => _signOut(),
+                        onPressed: () => getCurrLoc(),
                         icon: Icon(
                           Icons.my_location_rounded,
                           color: Colors.black,
@@ -244,7 +252,7 @@ class _MapPageState extends State<MapPage> {
     await Firebase.initializeApp();
     await FirebaseAuth.instance.signOut();
     Constants.prefs.setBool("loggedIn", false);
-    Navigator.pushReplacementNamed(context, '/login');
+    Navigator.pushReplacementNamed(context, '/');
   }
 
   void _onMapCreated(GoogleMapController controller) {
