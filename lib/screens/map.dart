@@ -156,7 +156,7 @@ class _MapPageState extends State<MapPage> {
                                     ],
                                   ),
                                   Container(
-                                      width: screenSize.width * 0.8,
+                                      width: screenSize.width * 0.7,
                                       child: RaisedButton(
                                         color: Colors.redAccent,
                                         shape: RoundedRectangleBorder(
