@@ -44,7 +44,6 @@ class _HomeState extends State<Home> {
             height: screenSize.height * 0.05,
           ),
           RaisedGradientButton(
-              color: Colors.white,
               child: Text(
                 'REGISTER',
                 style: TextStyle(color: Colors.white),

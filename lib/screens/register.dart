@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:micelio/utils/button.dart';
 import 'package:micelio/utils/showAlert.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Register extends StatefulWidget {
   @override
@@ -47,36 +48,54 @@ class _RegisterState extends State<Register> {
                 ),
               ),
             ),
-            SizedBox(height: screenSize.height*0.02),
-            Form(
-                key: _formKey,
-                child: Column(
-                  children: <Widget>[
-                    TextFormField(
-                      validator: (input) {
-                        if(input.isEmpty){
-                          return 'Provide an email';
-                        }
-                      },
-                      decoration: InputDecoration(
-                          labelText: 'Email'
-                      ),
-                      onSaved: (input) => _email = input,
-                    ),
-                    TextFormField(
-                      validator: (input) {
-                        if(input.length < 6){
-                          return 'Longer password please';
-                        }
-                      },
-                      decoration: InputDecoration(
-                          labelText: 'Password'
-                      ),
-                      onSaved: (input) => _password = input,
-                      obscureText: true,
-                    ),
-                  ],
-                )
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                        Theme(
+                          data: ThemeData(
+                            primaryColor: Colors.deepPurple
+                          ),
+                          child: TextFormField(
+                            validator: (input) {
+                              if(input.isEmpty){
+                                return 'Provide an email';
+                              }
+                            },
+                            decoration: InputDecoration(
+                                labelText: 'Email'
+                            ),
+                            onSaved: (input) => _email = input,
+                          ),
+                        ),
+                        Theme(
+                          data: ThemeData(
+                            primaryColor: Colors.deepPurple
+                          ),
+                          child: TextFormField(
+                            validator: (input) {
+                              if(input.length < 6){
+                                return 'Longer password please';
+                              }
+                            },
+                            decoration: InputDecoration(
+                                labelText: 'Password'
+                            ),
+                            onSaved: (input) => _password = input,
+                            obscureText: true,
+                          ),
+                        ),
+                      ],
+                    )
+                ),
+              ),
             ),
             SizedBox(height: screenSize.height*0.02),
             RaisedGradientButton(
@@ -113,7 +132,11 @@ class _RegisterState extends State<Register> {
         // print(" Inside try Register Page${user}");
         ShowAlert().showAlertDialog(context, "Success", "Registered successfully, You can login now...");
       } catch (e) {
-        print(" Inside catch Register Page${e.message}");
+        print(" Inside catch Register Page ${e.message}");
+        Fluttertoast.showToast(
+            msg: "Email already exist",
+            backgroundColor: Colors.white,
+            textColor: Colors.black);
       }
     }
   }

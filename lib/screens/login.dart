@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:micelio/utils/button.dart';
 import 'package:micelio/utils/constants.dart';
 import 'package:micelio/utils/showAlert.dart';
+
 FirebaseAuth auth = FirebaseAuth.instance;
 
 class Login extends StatefulWidget {
@@ -18,91 +19,89 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
-    return
-      Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                height: screenSize.height * 0.65,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [Color(0xFF81007F), Color(0xFF4A5BAD)]),
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(100),
-                        bottomRight: Radius.circular(100))),
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset('assets/images/car.png'),
-                      Text(
-                        "~LOGIN~",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              height: screenSize.height * 0.65,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFF81007F), Color(0xFF4A5BAD)]),
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(100),
+                      bottomRight: Radius.circular(100))),
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset('assets/images/car.png'),
+                    Text(
+                      "~LOGIN~",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(height: screenSize.height*0.02),
-              Form(
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Form(
                   key: _formKey,
                   child: Column(
                     children: <Widget>[
-                      TextFormField(
-                        validator: (input) {
-                          if(input.isEmpty){
-                            return 'Provide an email';
-                          }
-                        },
-                        decoration: InputDecoration(
-                            labelText: 'Email'
+                      Theme(
+                        data: ThemeData(primaryColor: Colors.deepPurple),
+                        child: TextFormField(
+                          validator: (input) {
+                            if (input.isEmpty) {
+                              return 'Provide an email';
+                            }
+                          },
+                          decoration: InputDecoration(labelText: 'Email'),
+                          onSaved: (input) => _email = input,
                         ),
-                        onSaved: (input) => _email = input,
                       ),
                       TextFormField(
                         validator: (input) {
-                          if(input.length < 6){
+                          if (input.length < 6) {
                             return 'Longer password please';
                           }
                         },
-                        decoration: InputDecoration(
-                            labelText: 'Password'
-                        ),
+                        decoration: InputDecoration(labelText: 'Password'),
                         onSaved: (input) => _password = input,
                         obscureText: true,
                       ),
                     ],
-                  )
-              ),
-              SizedBox(height: screenSize.height*0.02),
-              RaisedGradientButton(
-                  color: Colors.white,
-                  child: Text(
-                    'LOGIN',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      Color(0xFF4A5BAD),
-                      Color(0xFF81007F),
-                      Color(0xFF4A5BAD)
-                    ],
-                  ),
-                  onPressed: () => login()
-              ),
-            ],
-          ),
+                  )),
+            ),
+            SizedBox(height: screenSize.height * 0.02),
+            RaisedGradientButton(
+                color: Colors.white,
+                child: Text(
+                  'LOGIN',
+                  style: TextStyle(color: Colors.white),
+                ),
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    Color(0xFF4A5BAD),
+                    Color(0xFF81007F),
+                    Color(0xFF4A5BAD)
+                  ],
+                ),
+                onPressed: () => login()),
+          ],
         ),
-      );
+      ),
+    );
   }
 
   Future<void> login() async {
@@ -112,15 +111,17 @@ class _LoginState extends State<Login> {
       formState.save();
       try {
         final User user = (await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: _email, password: _password)).user;
+                .signInWithEmailAndPassword(email: _email, password: _password))
+            .user;
         print("Inside try ${user.email} ");
-        if(user!=null){
+        if (user != null) {
           Constants.prefs.setBool("loggedIn", true);
           Navigator.pushReplacementNamed(context, '/map');
-        }else{}
+        } else {}
       } catch (e) {
         print("Inside catch ${e.message}");
-        ShowAlert().showAlertDialog(context, "Error!", "Invalid user credentials");
+        ShowAlert()
+            .showAlertDialog(context, "Error!", "Invalid user credentials");
       }
     }
   }

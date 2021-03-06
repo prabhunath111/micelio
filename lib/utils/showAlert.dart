@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class ShowAlert {
-
   void showAlertDialog(BuildContext context, title, String bodyMsg) {
     // set up the button
     Widget okButton = FlatButton(
