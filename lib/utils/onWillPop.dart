@@ -3,10 +3,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 class OnWillPop {
   DateTime backbuttonpressedTime;
-
   Future<bool> onWillPop() async {
     DateTime currentTime = DateTime.now();
-
     bool backButton = backbuttonpressedTime == null ||
         currentTime.difference(backbuttonpressedTime) > Duration(seconds: 1);
 

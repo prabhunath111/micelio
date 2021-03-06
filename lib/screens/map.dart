@@ -18,8 +18,8 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   GoogleMapController mapController;
-
-  // Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  BitmapDescriptor userLocIcon;
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   Completer<GoogleMapController> _controller = Completer();
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(22.5692, 88.4489),
@@ -27,12 +27,14 @@ class _MapPageState extends State<MapPage> {
   );
   var getLocation = GetCurrentLocation();
   List nearbyCharger;
+  List allMarker = [];
   Position _currentPosition;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    setCustomMapPin();
     getCurrLoc();
   }
 
@@ -51,7 +53,7 @@ class _MapPageState extends State<MapPage> {
             trafficEnabled: true,
             // myLocationEnabled: true,
             // myLocationButtonEnabled: true,
-            // markers: Set<Marker>.of(markers.values),
+            markers: Set<Marker>.of(markers.values),
           ),
           (nearbyCharger != null)
               ? Positioned(
@@ -85,7 +87,7 @@ class _MapPageState extends State<MapPage> {
                                         width: screenSize.width * 0.2,
                                         height: screenSize.height * 0.05,
                                       ),
-                                      SizedBox(width: screenSize.width*0.05),
+                                      SizedBox(width: screenSize.width * 0.05),
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -116,11 +118,14 @@ class _MapPageState extends State<MapPage> {
                                                           bottom: 6.0),
                                                   child: Text(
                                                     nearbyCharger[index]
-                                                        ['charger_name'].toString().toUpperCase(),
+                                                            ['charger_name']
+                                                        .toString()
+                                                        .toUpperCase(),
                                                     style: TextStyle(
                                                         color: Colors.black,
                                                         fontWeight:
-                                                            FontWeight.bold, fontSize: 16.0),
+                                                            FontWeight.bold,
+                                                        fontSize: 16.0),
                                                   ),
                                                 )
                                               : Container(),
@@ -157,7 +162,7 @@ class _MapPageState extends State<MapPage> {
                                   Container(
                                       width: screenSize.width * 0.7,
                                       child: RaisedButton(
-                                        onPressed: (){},
+                                        onPressed: () {},
                                         color: Colors.green,
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
@@ -203,15 +208,15 @@ class _MapPageState extends State<MapPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Theme(
-                          data: ThemeData(
-                            primaryColor: Colors.green,
-                            hintColor: Colors.grey
-                          ),
+                            data: ThemeData(
+                                primaryColor: Colors.green,
+                                hintColor: Colors.grey),
                             child: TextField(
                               decoration: new InputDecoration(
                                   // borderRadiuserSide: const BorderSide(color: Colors.grey, width: 0.0),
                                   border: new OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.green, width: 0.0),
+                                    borderSide: BorderSide(
+                                        color: Colors.green, width: 0.0),
                                     borderRadius: const BorderRadius.all(
                                       const Radius.circular(50.0),
                                     ),
@@ -263,7 +268,10 @@ class _MapPageState extends State<MapPage> {
     await getLocation.getCurrentLocation();
     setState(() {
       _currentPosition = getLocation.currPosition;
+
+      allMarker.add({_currentPosition});
     });
+    markerC(_currentPosition);
     getNearbyCharger(_currentPosition);
   }
 
@@ -282,6 +290,32 @@ class _MapPageState extends State<MapPage> {
       setState(() {
         nearbyCharger = body1;
       });
+    });
+  }
+
+  Future markerC(Position positions) async {
+    markers.clear();
+    // creating a new MARKER
+    var markerIdVal = markers.length + 1;
+    String mar = markerIdVal.toString();
+    final MarkerId markerId = MarkerId(mar);
+    final Marker marker = Marker(
+        markerId: markerId,
+        infoWindow: InfoWindow(
+              title: positions.toString()),
+        position: LatLng(positions.latitude,positions.longitude),
+        icon: userLocIcon);
+    setState(() {
+      markers[markerId] = marker;
+    });
+  }
+
+  void setCustomMapPin() async {
+    BitmapDescriptor chargerLocation = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(devicePixelRatio: 2.5, size: Size(16, 16)),
+        'assets/images/marker.png');
+    setState(() {
+      userLocIcon = chargerLocation;
     });
   }
 }
