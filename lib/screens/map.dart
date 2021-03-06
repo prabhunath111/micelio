@@ -2,15 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:http/http.dart';
+import 'package:micelio/utils/button.dart';
 import 'package:micelio/utils/constants.dart';
 import 'package:micelio/utils/getcurrentlocation.dart';
 import 'package:micelio/utils/onWillPop.dart';
 import 'package:http/http.dart' as http;
-
 
 class MapPage extends StatefulWidget {
   @override
@@ -19,15 +19,15 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   GoogleMapController mapController;
-  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+
+  // Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   Completer<GoogleMapController> _controller = Completer();
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(22.5692, 88.4489),
     zoom: 7,
   );
-  var getlocation = GetCurrentLocation();
-  var myLocation;
-  var chargerCount;
+  var getLocation = GetCurrentLocation();
+  List nearbyCharger;
   Position _currentPosition;
 
   @override
@@ -36,60 +36,207 @@ class _MapPageState extends State<MapPage> {
     super.initState();
     getCurrLoc();
   }
+
   @override
   Widget build(BuildContext context) {
-
     var screenSize = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: OnWillPop().onWillPop,
       child: Scaffold(
-
-        body: Stack(
-          children: [
-            GoogleMap(
-              mapType: MapType.normal,
-              initialCameraPosition: _kGooglePlex,
-              onMapCreated: _onMapCreated,
-              trafficEnabled: true,
-              // myLocationEnabled: true,
-              // myLocationButtonEnabled: true,
-              markers: Set<Marker>.of(markers.values),
-            ),
-            Positioned(
-              left: 0.0,
-              bottom: 0.0,
-              right:0.0,
-              child: Container(
-                height: 100.0,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 3,
-                  itemBuilder: (BuildContext context, int index) => Card(
-                    child: Center(child: Text('Dummy Card Text')),
+          body: Stack(
+        children: [
+          GoogleMap(
+            mapType: MapType.normal,
+            initialCameraPosition: _kGooglePlex,
+            onMapCreated: _onMapCreated,
+            trafficEnabled: true,
+            // myLocationEnabled: true,
+            // myLocationButtonEnabled: true,
+            // markers: Set<Marker>.of(markers.values),
+          ),
+          (nearbyCharger != null)
+              ? Positioned(
+                  left: 0.0,
+                  bottom: 0.0,
+                  right: 0.0,
+                  child: Container(
+                    height: screenSize.height * 0.25,
+                    child: Center(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: nearbyCharger.length,
+                        itemBuilder: (BuildContext context, int index) => Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    // mainAxisAlignment:
+                                    //     MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/download.png',
+                                        width: screenSize.width * 0.2,
+                                        height: screenSize.height * 0.05,
+                                      ),
+                                      SizedBox(width: screenSize.width*0.05),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          (nearbyCharger[index]['charger_id'] !=
+                                                  null)
+                                              ? Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 4.0),
+                                                  child: Text(
+                                                    nearbyCharger[index]
+                                                        ['charger_id'],
+                                                    style: TextStyle(
+                                                        color: Colors.grey),
+                                                  ),
+                                                )
+                                              : Container(),
+                                          (nearbyCharger[index]
+                                                      ['charger_name'] !=
+                                                  null)
+                                              ? Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 4.0),
+                                                  child: Text(
+                                                    nearbyCharger[index]
+                                                        ['charger_name'],
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                )
+                                              : Container(),
+                                          (nearbyCharger[index]
+                                                      ['chargerStatus'] !=
+                                                  null)
+                                              ? Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 4.0),
+                                                  child: Text(
+                                                    nearbyCharger[index]
+                                                        ['chargerStatus'],
+                                                    style: TextStyle(
+                                                        color: (nearbyCharger[
+                                                                        index][
+                                                                    'chargerStatus'] ==
+                                                                'available')
+                                                            ? Colors.green
+                                                            : (nearbyCharger[
+                                                                            index]
+                                                                        [
+                                                                        'chargerStatus'] ==
+                                                                    'unavailable')
+                                                                ? Colors.red
+                                                                : Colors.black),
+                                                  ),
+                                                )
+                                              : Container(),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  Container(
+                                      width: screenSize.width * 0.8,
+                                      child: RaisedButton(
+                                        color: Colors.redAccent,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(18.0),
+                                          // side: BorderSide(color: Colors.red)
+                                        ),
+                                        child: Text(
+                                          "BOOK NOW",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      )),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
-            Positioned(
-                left: 0.0,
-                top: 0.0,
-                right: 0.0,
-                child: AppBar(
-                  elevation: 0.1,
-                  actions: [
+                )
+              : Container(),
+          Positioned(
+              left: 0.0,
+              top: screenSize.height * 0.07,
+              right: 0.0,
+              child: Container(
+                height: screenSize.height * 0.1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
                     IconButton(
-                      onPressed: ()=>_signOut(),
-                      icon: Icon(Icons.logout, color: Colors.red,size: 33.0,),
+                      onPressed: () => _signOut(),
+                      icon: Icon(
+                        Icons.logout,
+                        color: Colors.black,
+                        size: 32.0,
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextField(
+                            decoration: new InputDecoration(
+                                border: new OutlineInputBorder(
+                                  borderRadius: const BorderRadius.all(
+                                    const Radius.circular(50.0),
+                                  ),
+                                ),
+                                filled: true,
+                                prefixIcon: Icon(Icons.circle,
+                                    color: Colors.green, size: 11.0),
+                                hintStyle: new TextStyle(color: Colors.grey),
+                                hintText: "Your Location",
+                                fillColor: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(left: 4.0, right: 4.0),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: Colors.white),
+                      child: IconButton(
+                        onPressed: () => _signOut(),
+                        icon: Icon(
+                          Icons.my_location_rounded,
+                          color: Colors.black,
+                          size: 32.0,
+                        ),
+                      ),
                     ),
                   ],
-                  title: Text("Micelio"),
-                  backgroundColor: Colors.transparent,
-                )
-            ),
-          ],
-        )
-      ),
+                ),
+              ))
+        ],
+      )),
     );
   }
 
@@ -97,7 +244,7 @@ class _MapPageState extends State<MapPage> {
     await Firebase.initializeApp();
     await FirebaseAuth.instance.signOut();
     Constants.prefs.setBool("loggedIn", false);
-    Navigator.pushReplacementNamed(context, '/');
+    Navigator.pushReplacementNamed(context, '/login');
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -105,16 +252,15 @@ class _MapPageState extends State<MapPage> {
     _controller.complete(controller);
   }
 
-  Future getCurrLoc() async{
-    await getlocation.getCurrentLocation();
+  Future getCurrLoc() async {
+    await getLocation.getCurrentLocation();
     setState(() {
-      _currentPosition = getlocation.currPosition;
+      _currentPosition = getLocation.currPosition;
     });
-    print("Line81 ${_currentPosition}");
     getNearbyCharger(_currentPosition);
   }
 
-  Future<String> getNearbyCharger(Position position) async {
+  Future getNearbyCharger(Position position) async {
     final uri = "https://micelio.herokuapp.com/chargers/nearcharger";
     final headers = {'Content-Type': 'application/json'};
     var body = {
@@ -124,15 +270,11 @@ class _MapPageState extends State<MapPage> {
       }
     };
     final jsonBody = jsonEncode(body);
-    http.post(uri, body: jsonBody, headers: headers)
-        .then((response) {
+    http.post(uri, body: jsonBody, headers: headers).then((response) {
       final body1 = json.decode(response.body);
-      print("Response status: ${response.statusCode}");
-      print("Response body: ${body1.length}");
+      setState(() {
+        nearbyCharger = body1;
+      });
     });
-    setState(() {
-
-    });
-    // print("line120 $statusCode");
   }
 }
