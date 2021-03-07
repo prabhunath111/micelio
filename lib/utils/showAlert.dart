@@ -6,17 +6,19 @@ class ShowAlert {
     Widget okButton = FlatButton(
       child: Text("OK"),
       onPressed: () {
-        Navigator.of(context).pop();
+        // Navigator.of(context).pop();
         if(title=='Success'){
           Navigator.pushReplacementNamed(context, '/login');
-        }else {}
+        }else {
+          Navigator.pop(context);
+        }
       },
     );
 
     AlertDialog alert = AlertDialog(
       title: Text(title, style: TextStyle(color: (title=='Error!'?Colors.red:Colors.green)),),
       content: Text(bodyMsg),
-      actions: [
+      actions: (title=='Loading...')?[]:[
         okButton,
       ],
     );
@@ -27,6 +29,5 @@ class ShowAlert {
         return alert;
       },
     );
-
   }
 }

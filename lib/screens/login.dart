@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:micelio/screens/map.dart';
 import 'package:micelio/utils/button.dart';
 import 'package:micelio/utils/constants.dart';
 import 'package:micelio/utils/showAlert.dart';
@@ -15,6 +16,13 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _email, _password;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,18 +112,21 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Future<void> login() async {
+  Future<void> login() async{
+  if (!mounted) return;
     await Firebase.initializeApp();
     final formState = _formKey.currentState;
     if (formState.validate()) {
       formState.save();
+      ShowAlert()
+          .showAlertDialog(context, "Loading...", "Please wait");
       try {
         final User user = (await FirebaseAuth.instance
                 .signInWithEmailAndPassword(email: _email, password: _password))
             .user;
         print("Inside try ${user.email} ");
         if (user != null) {
-          Constants.prefs.setBool("loggedIn", true);
+            Constants.prefs.setBool("loggedIn", true);
           Navigator.pushReplacementNamed(context, '/map');
         } else {}
       } catch (e) {

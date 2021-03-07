@@ -123,6 +123,7 @@ class _RegisterState extends State<Register> {
 
   Future<void> signUp() async {
     await Firebase.initializeApp();
+    if (!mounted) return;
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       try {
@@ -130,6 +131,7 @@ class _RegisterState extends State<Register> {
             email: _email, password: _password)).user;
         // user.sendEmailVerification();
         // print(" Inside try Register Page${user}");
+        ShowAlert().showAlertDialog(context, "Loading...", "Please wait...");
         ShowAlert().showAlertDialog(context, "Success", "Registered successfully, You can login now...");
       } catch (e) {
         print(" Inside catch Register Page ${e.message}");

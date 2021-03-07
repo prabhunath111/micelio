@@ -4,7 +4,7 @@ class GetCurrentLocation {
   Future getCurrentLocation() async {
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
         .then((Position position) {
-      print("position9, $position");
+      print("position, $position");
       currPosition=position;
     }).catchError((e) {
       print(e);

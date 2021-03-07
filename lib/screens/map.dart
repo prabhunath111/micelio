@@ -37,7 +37,11 @@ class _MapPageState extends State<MapPage> {
     setCustomMapPin();
     getCurrLoc();
   }
-
+@override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -254,6 +258,7 @@ class _MapPageState extends State<MapPage> {
 
   Future<void> _signOut() async {
     await Firebase.initializeApp();
+    if (!mounted) return;
     await FirebaseAuth.instance.signOut();
     Constants.prefs.setBool("loggedIn", false);
     Navigator.pushReplacementNamed(context, '/');
@@ -268,7 +273,6 @@ class _MapPageState extends State<MapPage> {
     await getLocation.getCurrentLocation();
     setState(() {
       _currentPosition = getLocation.currPosition;
-
       allMarker.add({_currentPosition});
     });
     markerC(_currentPosition);
@@ -312,7 +316,7 @@ class _MapPageState extends State<MapPage> {
 
   void setCustomMapPin() async {
     BitmapDescriptor chargerLocation = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2.5, size: Size(16, 16)),
+        ImageConfiguration(devicePixelRatio: 2.5, size: Size(20, 20)),
         'assets/images/marker.png');
     setState(() {
       userLocIcon = chargerLocation;
